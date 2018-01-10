@@ -28,12 +28,19 @@ typedef struct mensagem{
     char *text;
 }MENSAGEM;
 
+typedef struct palavra{
+    char *palavra;
+    int freq_abs;
+    int *pos;
+}PALAVRA;
+
 typedef struct conversa{
     int id;
     int tamanho;
     int n_insercoes;
     MENSAGEM *pfirst_menssagem;
-    char **bag_of_word_conversa;
+    char ** bag_of_word_conversa;
+    PALAVRA * bag_of_word_conversa_p;
     int tamanho_bag_of_word_conversa;
     int n_insercoes_bag_of_word_conversa;
     struct conversa *pnext;
@@ -44,15 +51,23 @@ typedef struct corpus{
     int number_of_users;
     int users_size;
     struct conversa *pfirst_conversa;
+    char **bag_of_word_corpus;
+    int tamanho_bag_of_word_corpus;
+    int n_insercoes_bag_of_word_corpus;
 }CORPUS;
 
 int main_structs(void);
 void add_user(CORPUS * cp1, char* name);
-CONVERSA * insert_conversa(CORPUS * cp1);
+CONVERSA * insert_conversa_to_corpus(CORPUS * cp1);
 void insert_message(CONVERSA * conversa, int user, char * message, char * time);
 char * get_current_time(void);
 int read_file(CORPUS * corpus, char file[]);
 void print_conversa(CORPUS corpus);
+void remover_conversa(CORPUS *cp, int remove);
+void conversas_utilizador(CORPUS cp, int id);
+void palavras_comuns(CORPUS cp,char word[]);
+int ferquencia_termo(CORPUS cp, char termo[]);
+
 char* create_copy_dyn_string(char str[]);
 char ** string_to_matrix(char * string, int * matrix_size);
 void insert_string_into_matriz(char ** matrix, int * insertionsNumber, int * matrixSize, char * string);
