@@ -14,6 +14,7 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include "mergeSortLinkedList.h"
 
 #define M50 50
 
@@ -23,15 +24,24 @@ typedef struct utilizador{
 }UTILIZADOR;
 
 typedef struct mensagem{
+    int id;
     int utilizador;
     char * timestamp;
     char *text;
 }MENSAGEM;
 
+
+typedef struct posicao{
+    int indice_mensagem;
+    int pos;
+    struct posicao*  pospnext;
+}POSICAO;
+
 typedef struct palavra{
     char *palavra;
     int freq_abs;
-    int *pos;
+    POSICAO * pos;
+    struct palavra*  pnext;
 }PALAVRA;
 
 typedef struct conversa{
@@ -39,8 +49,8 @@ typedef struct conversa{
     int tamanho;
     int n_insercoes;
     MENSAGEM *pfirst_menssagem;
-    char ** bag_of_word_conversa;
-    PALAVRA * bag_of_word_conversa_p;
+    //char ** bag_of_word_conversa;
+    PALAVRA * bag_of_word_conversa;
     int tamanho_bag_of_word_conversa;
     int n_insercoes_bag_of_word_conversa;
     struct conversa *pnext;
@@ -51,7 +61,8 @@ typedef struct corpus{
     int number_of_users;
     int users_size;
     struct conversa *pfirst_conversa;
-    char **bag_of_word_corpus;
+    //char **bag_of_word_corpus;
+    PALAVRA *bag_of_word_corpus;
     int tamanho_bag_of_word_corpus;
     int n_insercoes_bag_of_word_corpus;
 }CORPUS;
@@ -73,11 +84,14 @@ char ** string_to_matrix(char * string, int * matrix_size);
 void insert_string_into_matriz(char ** matrix, int * insertionsNumber, int * matrixSize, char * string);
 void remove_delimiter(char* string, char* remove_delimiter);
 char* verify_delimiter(char delimiter[], char *string);
-char **bag_of_words(char ** matrix, int size, char **bag_of_word, int *size_bw, int *inserted_size);
+void bag_of_words(char ** matrix, int size, CONVERSA *conversa, int id, CORPUS *corpus);
+PALAVRA * verifica_palavra_existente(CONVERSA *conv, char *palavra);
+PALAVRA * verifica_palavra_existente_corpus(CORPUS *cp, char *palavra);
+
 char ** create_dynamic_matrix(int * number_of_lines, int number_lines);
 char ** add_more_lines(char ** matrix, int * number_of_lines, int number_to_add);
 void write_corpus_file(CORPUS cp, char file[]);
 void write_corpus_bin(CORPUS cp, char file[]);
-void printMatrix(char ** matrix, int number_of_lines_used);
-
+void printMatrix(PALAVRA* matrix, int number_of_lines_used);
+void preencher_bag_of_word_corpus(char **aux_matrix,int size, CONVERSA *conversa,int id, CORPUS *cp);
 #endif /* struct_h */

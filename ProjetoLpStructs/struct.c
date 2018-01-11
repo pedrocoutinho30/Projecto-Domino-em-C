@@ -24,8 +24,6 @@ int main_structs(){
      char file_bin[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/corpus_bin.txt";
      */
     
-    
-    
     CORPUS cp1 = {NULL, 0, 0, NULL,NULL, 0,0};
     add_user(&cp1, "Joaquim");
     add_user(&cp1, "Pedro");
@@ -36,26 +34,39 @@ int main_structs(){
     if(!read_file(&cp1, file1)){
         printf("Error\n");
     }
-    /*
+    
     if(!read_file(&cp1, file2)){
         printf("Error\n");
     }
     if(!read_file(&cp1, file3)){
         printf("Error\n");
     }
-    */
+
     print_conversa(cp1);
-    //remover_conversa(&cp1,0);
-    //conversas_utilizador(cp1,3);
-    // print_conversa(cp1);
     
-    //freq=ferquencia_termo(cp1, "Ola");
-    //printf("A palavra Ola aparece %d vezes no corpus!\n", freq);
-    //write_corpus_file(cp1, file_write);
-    //write_corpus_bin(cp1, file_bin);
-    //palavras_comuns(cp1,"surf");
-    //printf("Bag_of_word Corpus\n\n");
-    //printMatrix(cp1.bag_of_word_corpus, cp1.n_insercoes_bag_of_word_corpus);
+    
+    //conversas_utilizador(cp1,1);
+    /*remover_conversa(&cp1,0);
+     //print_conversa(cp1);
+     */
+
+    /*freq=ferquencia_termo(cp1, "Ola");
+    printf("A palavra Ola aparece %d vezes no corpus!\n", freq);
+    */
+    /*write_corpus_file(cp1, file_write);
+    write_corpus_bin(cp1, file_bin);
+    */
+
+   
+    printf("Bag_of_word Corpus\n\n");
+    PALAVRA *p = cp1.bag_of_word_corpus;
+    for(int i=0;i<cp1.n_insercoes_bag_of_word_corpus;i++){
+        printf("%s\n", p->palavra);
+        p=p->pnext;
+    }
+    
+         palavras_comuns(cp1,"surf");
+    
     return 0;
 }
 
@@ -74,6 +85,7 @@ void add_user(CORPUS * cp1, char* name){
 }
 
 CONVERSA * insert_conversa_to_corpus(CORPUS * cp1){
+    
     CONVERSA * conversa = (CONVERSA*)malloc(sizeof(CONVERSA));
     conversa->tamanho = 0;
     conversa->n_insercoes = 0;
@@ -99,12 +111,13 @@ CONVERSA * insert_conversa_to_corpus(CORPUS * cp1){
     
     conversa->id = i;
     aux->pnext = conversa;
+
     return conversa;
 }
 
+
 void insert_message(CONVERSA * conversa, int user, char * message, char * time){
     MENSAGEM * msg = (MENSAGEM*)malloc(sizeof(MENSAGEM));
-    
     msg->utilizador = user;
     
     if (time == NULL){
@@ -116,6 +129,8 @@ void insert_message(CONVERSA * conversa, int user, char * message, char * time){
     
     msg->text = (char*)malloc(sizeof(char) * strlen(message));
     strcpy(msg->text, message);
+    msg->id=conversa->n_insercoes;
+    
     
     if (conversa->tamanho == conversa->n_insercoes){
         conversa->pfirst_menssagem = (MENSAGEM*)realloc(conversa->pfirst_menssagem, sizeof(MENSAGEM) * (conversa->tamanho + 10));
@@ -158,35 +173,32 @@ int read_file(CORPUS * corpus, char file[]){
         time = strtok(NULL, "\n");
         if (text != NULL && time != NULL){
             insert_message(conversa, id, text, time);
-            
             aux_matrix = string_to_matrix(text, &size);
-           
-            conversa->bag_of_word_conversa = bag_of_words(aux_matrix, size, conversa->bag_of_word_conversa, &conversa->tamanho_bag_of_word_conversa, &conversa->n_insercoes_bag_of_word_conversa);
-
-
-            //so preencher corpus quando tiver todas as conversas
-           // corpus->bag_of_word_corpus=bag_of_words(aux_matrix, size, corpus->bag_of_word_corpus, &corpus->tamanho_bag_of_word_corpus, &corpus->n_insercoes_bag_of_word_corpus);
+            bag_of_words(aux_matrix, size, conversa, conversa->n_insercoes, corpus);
+            preencher_bag_of_word_corpus(aux_matrix, size, conversa, conversa->n_insercoes, corpus);
         }
-        
     }
-    
     fclose(fp);
     return 1;
 }
 
+
+
 void print_conversa(CORPUS corpus){
     CONVERSA * conversa = corpus.pfirst_conversa;
     MENSAGEM * mensagem = NULL;
+    
     while (conversa != NULL){
-        printf("\n\tconversa %d\n",conversa->id);
+
         printf("\tBag of word:\n");
         printMatrix(conversa->bag_of_word_conversa, conversa->n_insercoes_bag_of_word_conversa);
         
+        printf("\n\tconversa %d\n",conversa->id);
         printf("\tMensagens:\n");
-        
+
         for (int i = 0; i < conversa->n_insercoes; i++){
             mensagem = (conversa->pfirst_menssagem + i);
-            printf("%d  %s   %s\n", mensagem->utilizador,mensagem->text, mensagem->timestamp);
+            printf("id: %d utilizador: %d  mensagem: %s data: %s\n", mensagem->id, mensagem->utilizador,mensagem->text, mensagem->timestamp);
         }
         conversa = conversa->pnext;
     }
@@ -250,16 +262,12 @@ void conversas_utilizador(CORPUS corpus, int id){
 }
 
 void palavras_comuns(CORPUS cp, char word[]){
-    for(int i=0;i<cp.n_insercoes_bag_of_word_corpus;i++){
-        if(strstr(cp.bag_of_word_corpus[i], word)!=0){
-            printf("%s   ->   %s\n", word, cp.bag_of_word_corpus[i]);
-        }
-    }
+  // PALAVRA *pal = 
 }
 
 int ferquencia_termo(CORPUS cp, char termo[]){
     int freq=0;
-    
+
     return freq;
 }
 
@@ -295,8 +303,6 @@ char ** string_to_matrix(char * string, int * matrix_size){
             if (strlen(strstr(token, aux)) == 1){
                 remove_delimiter(token, aux);
                 insert_string_into_matriz(stringMatrix, matrix_size, &stringMatrixSize, token);
-                insert_string_into_matriz(stringMatrix, matrix_size, &stringMatrixSize, token);
-                
                 insert_string_into_matriz(stringMatrix, matrix_size, &stringMatrixSize, aux);
             }else{
                 remove_delimiter(token, aux);
@@ -316,8 +322,10 @@ char ** string_to_matrix(char * string, int * matrix_size){
     if (removedNewLineFlag){
         insert_string_into_matriz(stringMatrix, matrix_size, &stringMatrixSize, "\n");
     }
+    
     return stringMatrix;
 }
+
 
 void insert_string_into_matriz(char ** matrix, int * insertionsNumber, int * matrixSize, char * string){
     if (*insertionsNumber >= *matrixSize)
@@ -373,26 +381,92 @@ char* verify_delimiter(char delimiter[], char *string){
     return NULL;
 }
 
-char ** bag_of_words(char ** matrix, int size, char ** bag_of_word, int *size_bw, int *inserted_size){
-    if (bag_of_word == NULL){
-        bag_of_word = create_dynamic_matrix(size_bw, 100);
-        *inserted_size = 0;
+void preencher_bag_of_word_corpus(char **aux_matrix,int size, CONVERSA *conversa, int id, CORPUS *cp){
+    
+    PALAVRA * pal = NULL;
+    POSICAO *pos = (POSICAO*)malloc(sizeof(POSICAO));
+    
+    pos->indice_mensagem=id;
+
+    for (int i=0;i<size;i++){
+        //if ((pal = verifica_palavra_existente(conv, *(aux_matrix+i))) != NULL){
+        if ((pal = verifica_palavra_existente_corpus(cp, *(aux_matrix+i))) != NULL){
+        //incrementa
+            pal->freq_abs++;
+            pos->pos = i;
+            pos->pospnext = pal->pos;
+            pal->pos = pos;
+        }else{
+            //insere
+            pal = (PALAVRA*)malloc(sizeof(PALAVRA));
+            pal->palavra = (char*)malloc(sizeof(char)*strlen(*(aux_matrix+i)));
+            strcpy(pal->palavra, *(aux_matrix+i));
+            pal->freq_abs = 1;
+            pal->pnext = cp->bag_of_word_corpus;
+            cp->bag_of_word_corpus = pal;
+            cp->n_insercoes_bag_of_word_corpus++;
+            pos->pos = i;
+            pos->pospnext = NULL;
+            pal->pos = pos;
+        }
+    }
+}
+
+void bag_of_words(char ** matrix, int size, CONVERSA * conversa, int id, CORPUS *corpus){
+
+    PALAVRA * pal = NULL;
+    POSICAO *pos = (POSICAO*)malloc(sizeof(POSICAO));
+    
+    pos->indice_mensagem=id;
+    
+    for (int i=0;i<size;i++){
+        if ((pal = verifica_palavra_existente(conversa, *(matrix+i))) != NULL){
+            //incrementa
+            pal->freq_abs++;
+            pos->pos = i;
+            pos->pospnext = pal->pos;
+            pal->pos = pos;
+        }else{
+            //insere
+            pal = (PALAVRA*)malloc(sizeof(PALAVRA));
+            pal->palavra = (char*)malloc(sizeof(char)*strlen(*(matrix+i)));
+            strcpy(pal->palavra, *(matrix+i));
+            pal->freq_abs = 1;
+            pal->pnext = conversa->bag_of_word_conversa;
+            conversa->bag_of_word_conversa = pal;
+            conversa->n_insercoes_bag_of_word_conversa++;
+            pos->pos = i;
+            pos->pospnext = NULL;
+            pal->pos = pos;
+            
+        }
+    }
+}
+
+PALAVRA * verifica_palavra_existente(CONVERSA *conv, char *palavra){
+    PALAVRA * pal = conv->bag_of_word_conversa;
+    while ( pal != NULL ){
+        if (strcmp(pal->palavra, palavra) == 0)
+
+            return pal;
+        
+        pal = pal->pnext;
+    }
+
+    return NULL;
+}
+
+PALAVRA * verifica_palavra_existente_corpus(CORPUS *cp, char *palavra){
+    PALAVRA * pal = cp->bag_of_word_corpus;
+    while ( pal != NULL ){
+        if (strcmp(pal->palavra, palavra) == 0)
+            
+            return pal;
+        
+        pal = pal->pnext;
     }
     
-    int exist = 0;
-    for (int i=0;i<size;i++){
-        for (int j=0;j<(*inserted_size);j++){
-            if (strcmp(*(bag_of_word+j), *(matrix+i))==0){
-                exist=1;
-                break;
-            }
-        }
-        if (exist == 0){
-            insert_string_into_matriz(bag_of_word,inserted_size,size_bw,*(matrix+i));
-        }
-        exist=0;
-    }
-    return bag_of_word;
+    return NULL;
 }
 
 
@@ -452,6 +526,7 @@ void write_corpus_bin(CORPUS cp, char file[]){
         fprintf(stdout, "...Erro Abrir ficheiro");
         return;
     }
+    
     //fwrite("teste", strlen("teste"), 1, fp);
     while (conversa != NULL){
         //printMatrix(conversa->bag_of_word_conversa, conversa->n_insercoes_bag_of_word_conversa);
@@ -468,17 +543,13 @@ void write_corpus_bin(CORPUS cp, char file[]){
     
 }
 
-void printMatrix(char ** matrix, int number_of_lines_used){
+
+void printMatrix(PALAVRA * matrix, int number_of_lines_used){
     if (matrix != NULL){
         for (int i = 0; i<number_of_lines_used; i++){
-            printf("%s\n", *(matrix+i));
+            printf("%s %d\n", matrix->palavra, matrix->freq_abs);
+            matrix=matrix->pnext;
         }
     }
     printf("-----------\n");
 }
-
-
-
-
-
-
