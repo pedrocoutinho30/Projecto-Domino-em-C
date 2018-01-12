@@ -1,4 +1,4 @@
-1:Ta?|12h09m
-2:Ta sim, fui ao surfes!|12h10m
-1:Tchau.|12h11m
-2:Tchau, abraco.|12h12m
+1:Oi?|12h09m
+2:Sim?|12h10m
+1:Vamos indo?|12h11m
+2:Yap.|12h12m

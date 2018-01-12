@@ -14,7 +14,6 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
-#include "mergeSortLinkedList.h"
 
 #define M50 50
 
@@ -51,7 +50,7 @@ typedef struct conversa{
     MENSAGEM *pfirst_menssagem;
     //char ** bag_of_word_conversa;
     PALAVRA * bag_of_word_conversa;
-    int tamanho_bag_of_word_conversa;
+  //  int tamanho_bag_of_word_conversa;
     int n_insercoes_bag_of_word_conversa;
     struct conversa *pnext;
 }CONVERSA;
@@ -63,7 +62,7 @@ typedef struct corpus{
     struct conversa *pfirst_conversa;
     //char **bag_of_word_corpus;
     PALAVRA *bag_of_word_corpus;
-    int tamanho_bag_of_word_corpus;
+    //int tamanho_bag_of_word_corpus;
     int n_insercoes_bag_of_word_corpus;
 }CORPUS;
 
@@ -94,4 +93,8 @@ void write_corpus_file(CORPUS cp, char file[]);
 void write_corpus_bin(CORPUS cp, char file[]);
 void printMatrix(PALAVRA* matrix, int number_of_lines_used);
 void preencher_bag_of_word_corpus(char **aux_matrix,int size, CONVERSA *conversa,int id, CORPUS *cp);
+void remover_mensagem(int id_mensagem, int id_conversa,CORPUS *cp);
+
+
+
 #endif /* struct_h */
