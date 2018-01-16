@@ -40,7 +40,7 @@ typedef struct palavra{
     char *palavra;
     int freq_abs;
     POSICAO * pos;
-    struct palavra*  pnext;
+    struct palavra* pnext;
 }PALAVRA;
 
 typedef struct conversa{
@@ -48,9 +48,7 @@ typedef struct conversa{
     int tamanho;
     int n_insercoes;
     MENSAGEM *pfirst_menssagem;
-    //char ** bag_of_word_conversa;
     PALAVRA * bag_of_word_conversa;
-  //  int tamanho_bag_of_word_conversa;
     int n_insercoes_bag_of_word_conversa;
     struct conversa *pnext;
 }CONVERSA;
@@ -72,6 +70,7 @@ CONVERSA * insert_conversa_to_corpus(CORPUS * cp1);
 void insert_message(CONVERSA * conversa, int user, char * message, char * time);
 char * get_current_time(void);
 int read_file(CORPUS * corpus, char file[]);
+int read_corpus(CORPUS * corpus, char file[]);
 void print_conversa(CORPUS corpus);
 void remover_conversa(CORPUS *cp, int remove);
 void conversas_utilizador(CORPUS cp, int id);
@@ -96,5 +95,12 @@ void preencher_bag_of_word_corpus(char **aux_matrix,int size, CONVERSA *conversa
 void remover_mensagem(int id_mensagem, int id_conversa,CORPUS *cp);
 
 
+PALAVRA* Merge(PALAVRA *a, PALAVRA *b, int flag);
+void FrontBackSplit(PALAVRA* source,
+                    PALAVRA** frontRef, PALAVRA** backRef);
+void printList(PALAVRA *node);
+void MergeSort(PALAVRA** list, int flag);
+void addElement(PALAVRA** list, char * new_data, int key);
+void print_bag_of_word_corpus(CORPUS cp1);
 
 #endif /* struct_h */

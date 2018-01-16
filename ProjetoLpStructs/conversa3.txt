@@ -1,0 +1,5 @@
+4:Ola, tudo bem? |12h09m
+2:Ola, sim e contigo?|12h10m
+4:Tambem.|12h11m
+2:Queres ir ao cinema?|12h12m
+4:Pode ser!|12h12m

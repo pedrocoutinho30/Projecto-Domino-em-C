@@ -1,16 +1,15 @@
 
-	conversa 0
-	Bag of word:
-	Mensagens:
-1   Ta?   12h09m
-2   Ta sim?   12h10m
-1   Tchau   12h11m
-2   Tchau, abraco.   12h12m
-
 	conversa 1
-	Bag of word:
 	Mensagens:
-4   Oi, tudo bem?   12h09m
-3   Ta tudo e contigo?   12h10m
-4   Tambem. Vais hoje?   12h11m
-3   Vou.   12h12m
+4   Oi, tudo?   12h09m
+3   Ta, tudo!   12h10m
+4   Vamos surfar surfar vamos?   12h11m
+3   Bota.   12h12m
+
+	conversa 2
+	Mensagens:
+4   Ola, tudo bem?    12h09m
+2   Ola, sim e contigo?   12h10m
+4   Tambem.   12h11m
+2   Queres ir ao cinema?   12h12m
+4   Pode ser!   12h12m
