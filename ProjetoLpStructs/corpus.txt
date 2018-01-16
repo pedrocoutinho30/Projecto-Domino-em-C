@@ -1,4 +1,11 @@
 
+	conversa 0
+	Mensagens:
+1   Oi?   12h09m
+2   Sim Sim Sim Sim?   12h10m
+1   vamos indo vamos la?   12h11m
+2   Yap.   12h12m
+
 	conversa 1
 	Mensagens:
 4   Oi, tudo?   12h09m

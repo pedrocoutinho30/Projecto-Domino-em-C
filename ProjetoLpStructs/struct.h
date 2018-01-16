@@ -96,11 +96,13 @@ void remover_mensagem(int id_mensagem, int id_conversa,CORPUS *cp);
 
 
 PALAVRA* Merge(PALAVRA *a, PALAVRA *b, int flag);
-void FrontBackSplit(PALAVRA* source,
-                    PALAVRA** frontRef, PALAVRA** backRef);
+void FrontBackSplit(PALAVRA* source,PALAVRA** frontRef, PALAVRA** backRef);
 void printList(PALAVRA *node);
 void MergeSort(PALAVRA** list, int flag);
 void addElement(PALAVRA** list, char * new_data, int key);
 void print_bag_of_word_corpus(CORPUS cp1);
-
+int idf_aux(CORPUS cp, char pal[]);
+float idf(int n, int nt);
+int numero_conversas(CORPUS cp);
+void tfIdf(char pal[], CORPUS cp);
 #endif /* struct_h */

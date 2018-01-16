@@ -10,19 +10,15 @@
 
 
 int main_structs(){
-    //char file[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/corpus.txt";
-    //char file[]="/Users/antonioferreira/Documents/LP/ProjetoLpStructs/corpus.txt";
-    //char file1[]= "/Users/antonioferreira/Documents/LP/ProjetoLpStructs/conversa1.txt", "r");
     char file1[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/conversa1.txt";
-    //char file2[]= "//Users/antonioferreira/Documents/LP/ProjetoLpStructs//conversa2.txt", "r");
     char file2[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/conversa2.txt";
-    //char file3[]= "/Users/antonioferreira/Documents/LP/ProjetoLpStructs//conversa3.txt", "r");
     char file3[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/conversa3.txt";
+    
     char file_write[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/corpus.txt";
     char file_bin[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/corpus_bin.txt";
     
     CORPUS cp1 = {NULL, 0, 0, NULL,NULL, 0};
-    
+
     add_user(&cp1, "Toze");
     add_user(&cp1, "Pedro");
     add_user(&cp1, "Antonio");
@@ -41,7 +37,7 @@ int main_structs(){
         printf("Error\n");
     }
     
-    MergeSort(&cp1.bag_of_word_corpus, cp1.n_insercoes_bag_of_word_corpus);
+   MergeSort(&cp1.bag_of_word_corpus, cp1.n_insercoes_bag_of_word_corpus);
     CONVERSA *c = cp1.pfirst_conversa;
     while(c->pnext!=NULL){
         MergeSort(&c->bag_of_word_conversa, c->n_insercoes_bag_of_word_conversa);
@@ -50,7 +46,7 @@ int main_structs(){
     MergeSort(&c->bag_of_word_conversa, c->n_insercoes_bag_of_word_conversa);
     
     print_conversa(cp1);
-  printf("\n\n");
+    printf("\n\n");
     print_bag_of_word_corpus(cp1);
       printf("\n\n");
      
@@ -70,26 +66,34 @@ int main_structs(){
     
     
     
-     remover_conversa(&cp1,0);
-     print_conversa(cp1);
+     //remover_conversa(&cp1,0);
+     //print_conversa(cp1);
      printf("\n\n");
     
     
     printf("\n\n");
-    int id_mensagem=2;
-    int id_conversa=0;
-    remover_mensagem(id_mensagem, id_conversa, &cp1);
-    print_conversa(cp1);
+    //int id_mensagem=2;
+    //int id_conversa=0;
+    //remover_mensagem(id_mensagem, id_conversa, &cp1);
+    //print_conversa(cp1);
     printf("\n\n");
     
         print_bag_of_word_corpus(cp1);
     
      int freq=0;
+     int nt=0;
      char termo[]="Sim";
      freq=ferquencia_termo(cp1, termo);
+     nt=idf_aux(cp1, termo);
      printf("\n\n");
-     printf("A palavra %s aparece %d vezes no corpus!\n",termo, freq);
+     printf("A palavra %s aparece %d vezes no corpus! E aparecem em %d conversas\n",termo, freq, nt);
      printf("\n\n");
+    
+    int nConversas = 0;
+    nConversas = numero_conversas(cp1);
+    printf("idf[]=%f\n",idf(nConversas, nt));
+    tfIdf(termo, cp1);
+    
     
      palavras_comuns(cp1,"Va");
      printf("\n\n");
@@ -107,8 +111,9 @@ int main_structs(){
     return 0;
 }
 
+
 /**
- *@brief print_bag_of_word_corpus função auxiliar que imprime a bag of word do corpus
+ *@briefprint_bag_of_word_corpus função auxiliar que imprime a bag of word do corpus
  *@param cp1 CORPUS que se pretende imprimir
  */
 void print_bag_of_word_corpus(CORPUS cp1){
@@ -418,7 +423,7 @@ void palavras_comuns(CORPUS cp, char word[]){
  *@param cp corpus
  *@param termo palavra que queremos saber a frequencia
  */
-int ferquencia_termo(CORPUS cp, char termo[]){
+int ferquencia_termo(CORPUS cp, char termo[]){// tf
     int freq=0;
     while(cp.bag_of_word_corpus!=NULL){
         if(strcmp(cp.bag_of_word_corpus->palavra,termo)==0){
@@ -427,6 +432,64 @@ int ferquencia_termo(CORPUS cp, char termo[]){
         cp.bag_of_word_corpus=cp.bag_of_word_corpus->pnext;
     }
     return freq;
+}
+
+
+int idf_aux(CORPUS cp, char pal[]){
+    CONVERSA * conversa = cp.pfirst_conversa;
+    int nt=0;
+    while (conversa != NULL){
+            while(conversa->bag_of_word_conversa!=NULL){
+                
+                if(strcmp(pal, conversa->bag_of_word_conversa->palavra)==0){
+                    nt++;
+                }
+                conversa->bag_of_word_conversa=conversa->bag_of_word_conversa->pnext;
+            }
+        
+        conversa=conversa->pnext;
+        
+    }
+    return nt;
+}
+
+int numero_conversas(CORPUS cp){
+    int n = 0;
+    CONVERSA * conversa = cp.pfirst_conversa;
+    while (conversa != NULL){
+        n++;
+        conversa=conversa->pnext;
+    }
+    return n;
+}
+
+float idf(int n, int nt){
+    float d = 1+nt;
+    float x = n/d;
+    float r = n%(1+nt);
+    x = x + r;
+   
+    return log(x);
+}
+void tfIdf(char pal[], CORPUS cp){
+    CONVERSA * conversa = cp.pfirst_conversa;
+    
+    while (conversa != NULL){
+        printf("->%s\n",conversa->pfirst_menssagem->text);
+        while(conversa->bag_of_word_conversa!=NULL){
+             printf("Entrou\n");
+            
+            if(strcmp(pal, conversa->bag_of_word_conversa->palavra)==0){
+           
+            }
+            conversa->bag_of_word_conversa=conversa->bag_of_word_conversa->pnext;
+        }
+        //printf("Freq. %d\n\n");
+        
+        
+        conversa=conversa->pnext;
+        
+    }
 }
 
 /**
