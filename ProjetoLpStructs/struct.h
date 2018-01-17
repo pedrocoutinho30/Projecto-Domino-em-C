@@ -102,7 +102,6 @@ void MergeSort(PALAVRA** list, int flag);
 void addElement(PALAVRA** list, char * new_data, int key);
 void print_bag_of_word_corpus(CORPUS cp1);
 int idf_aux(CORPUS cp, char pal[]);
-float idf(int n, int nt);
+void tfIdf(int n, int nt, char pal[], CORPUS cp);
 int numero_conversas(CORPUS cp);
-void tfIdf(char pal[], CORPUS cp);
 #endif /* struct_h */

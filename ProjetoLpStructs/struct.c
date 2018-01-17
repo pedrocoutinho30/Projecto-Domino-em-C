@@ -10,47 +10,53 @@
 
 
 int main_structs(){
-    char file1[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/conversa1.txt";
+   /* char file1[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/conversa1.txt";
     char file2[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/conversa2.txt";
     char file3[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/conversa3.txt";
+    */
+    char file4[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/corpus.txt";
     
-    char file_write[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/corpus.txt";
-    char file_bin[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/corpus_bin.txt";
+   // char file_write[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/corpus.txt";
+    //char file_bin[]="/Users/pedrocoutinho/Documents/ProjetoLpStructs/ProjetoLpStructs/corpus_bin.txt";
     
     CORPUS cp1 = {NULL, 0, 0, NULL,NULL, 0};
-
+    
     add_user(&cp1, "Toze");
     add_user(&cp1, "Pedro");
     add_user(&cp1, "Antonio");
     add_user(&cp1, "Adolfo");
     add_user(&cp1, "Tina");
     
-
-    
-    if(!read_file(&cp1, file1)){
-        printf("Error\n");
-    }
-    if(!read_file(&cp1, file2)){
-        printf("Error\n");
-    }
-    if(!read_file(&cp1, file3)){
+    if(!read_corpus(&cp1, file4)){
         printf("Error\n");
     }
     
-   MergeSort(&cp1.bag_of_word_corpus, cp1.n_insercoes_bag_of_word_corpus);
-    CONVERSA *c = cp1.pfirst_conversa;
-    while(c->pnext!=NULL){
-        MergeSort(&c->bag_of_word_conversa, c->n_insercoes_bag_of_word_conversa);
-        c=c->pnext;
-    }
-    MergeSort(&c->bag_of_word_conversa, c->n_insercoes_bag_of_word_conversa);
+    /*
+     if(!read_file(&cp1, file1)){
+     printf("Error\n");
+     }
+     if(!read_file(&cp1, file2)){
+     printf("Error\n");
+     }
+     if(!read_file(&cp1, file3)){
+     printf("Error\n");
+     }
+     */
     
-    print_conversa(cp1);
-    printf("\n\n");
-    print_bag_of_word_corpus(cp1);
-      printf("\n\n");
+     MergeSort(&cp1.bag_of_word_corpus, cp1.n_insercoes_bag_of_word_corpus);
+     CONVERSA *c = cp1.pfirst_conversa;
+     while(c->pnext!=NULL){
+     MergeSort(&c->bag_of_word_conversa, c->n_insercoes_bag_of_word_conversa);
+     c=c->pnext;
+     }
+     MergeSort(&c->bag_of_word_conversa, c->n_insercoes_bag_of_word_conversa);
      
-     printf("Bag_of_word Corpus\n\n");
+     print_conversa(cp1);
+     printf("\n\n");
+     print_bag_of_word_corpus(cp1);
+     printf("\n\n");
+     
+     /*printf("Bag_of_word Corpus\n\n");
      PALAVRA *p = cp1.bag_of_word_corpus;
      for(int i=0;i<cp1.n_insercoes_bag_of_word_corpus;i++){
      
@@ -62,13 +68,13 @@ int main_structs(){
      //  p->pos=p->pos->pospnext;
      //}
      p=p->pnext;
-     }
+     }*/
     
     
     
-     //remover_conversa(&cp1,0);
-     //print_conversa(cp1);
-     printf("\n\n");
+    //remover_conversa(&cp1,0);
+    //print_conversa(cp1);
+    printf("\n\n");
     
     
     printf("\n\n");
@@ -77,9 +83,9 @@ int main_structs(){
     //remover_mensagem(id_mensagem, id_conversa, &cp1);
     //print_conversa(cp1);
     printf("\n\n");
-    
-        print_bag_of_word_corpus(cp1);
-    
+    /*
+     print_bag_of_word_corpus(cp1);
+     
      int freq=0;
      int nt=0;
      char termo[]="Sim";
@@ -88,27 +94,27 @@ int main_structs(){
      printf("\n\n");
      printf("A palavra %s aparece %d vezes no corpus! E aparecem em %d conversas\n",termo, freq, nt);
      printf("\n\n");
-    
-    int nConversas = 0;
-    nConversas = numero_conversas(cp1);
-    printf("idf[]=%f\n",idf(nConversas, nt));
-    tfIdf(termo, cp1);
-    
-    
+     
+     int nConversas = 0;
+     nConversas = numero_conversas(cp1);
+     
+     tfIdf(nConversas, nt,termo, cp1);
+     
+     
      palavras_comuns(cp1,"Va");
      printf("\n\n");
-    
-    
-    
+     
+     
+     
      printf("\n\n");
      conversas_utilizador(cp1,1);
      printf("\n\n");
-     
+     */
     
-    
-    write_corpus_file(cp1, file_write);
-    write_corpus_bin(cp1, file_bin);
-    return 0;
+    /*
+     write_corpus_file(cp1, file_write);
+     write_corpus_bin(cp1, file_bin);
+     */return 0;
 }
 
 
@@ -213,6 +219,7 @@ void insert_message(CONVERSA * conversa, int user, char * message, char * time){
         conversa->tamanho+=10;
     }
     *(conversa->pfirst_menssagem + (conversa->n_insercoes++)) = *msg;
+    
 }
 
 
@@ -224,6 +231,55 @@ char * get_current_time(){
     timeinfo = localtime ( &rawtime );
     return asctime (timeinfo);
 }
+
+
+int read_corpus(CORPUS * corpus, char file[]){
+    FILE *fp=NULL;
+    int id_utilizador = 0;
+    char *text;
+    char *time;
+    int n_conversas=0;
+    int n_mensagens=0;
+    int id_conversa=0;
+    int size = 0;
+    char **aux_matrix=NULL;
+    
+    CONVERSA * conversa = insert_conversa_to_corpus(corpus);
+    
+    fp = fopen(file, "r");
+    
+    if(fp == NULL){
+        return 0;
+    }else
+    {
+        fscanf(fp,"%*s %*s %*s %d",&n_conversas);
+        printf("n c- %d\n", n_conversas);
+        for(int j=0;j<n_conversas;j++){
+            fscanf(fp,"%*s %d %*s %*s %*s %d",&id_conversa, &n_mensagens);
+            printf("%d, %d\n", id_conversa, n_mensagens);
+            for(int i=0;i<n_mensagens;i++){
+                fscanf(fp,"%d %[^\n]s %*s",&id_utilizador,text);
+            
+                text=strtok(text, "|");
+                time=strtok(NULL, "\n");
+                printf("text %s\n", text);
+                printf("time %s\n", time);
+                if(text != NULL && time != NULL){
+                    insert_message(conversa, id_utilizador, text, time);
+                    aux_matrix = string_to_matrix(text, &size);
+                    bag_of_words(aux_matrix, size, conversa, conversa->n_insercoes, corpus);
+                    preencher_bag_of_word_corpus(aux_matrix, size, conversa, corpus->pfirst_conversa->n_insercoes_bag_of_word_conversa, corpus);
+                }
+            }
+        }
+        
+    }
+    print_conversa(*corpus);
+    print_bag_of_word_corpus(*corpus);
+    fclose(fp);
+    return 1;
+}
+
 
 /**
  *@brief read_file lê as várias conversas e parte o seu texto com o auxilio do strtok na forma das estruturas
@@ -284,7 +340,7 @@ void print_conversa(CORPUS corpus){
             
             mensagem = (conversa->pfirst_menssagem + i);
             
-            printf("mens id: %d utilizador: %d  mensagem: %s data: %s\n", mensagem->id, mensagem->utilizador,mensagem->text, mensagem->timestamp);
+           // printf("mens id: %d utilizador: %d  mensagem: %s data: %s\n", mensagem->id, mensagem->utilizador,mensagem->text, mensagem->timestamp);
         }
         conversa = conversa->pnext;
     }
@@ -306,8 +362,8 @@ void remover_mensagem(int id_mensagem, int id_conversa,CORPUS *cp){
                 
                 if((mens+i)->id==id_mensagem){
                     /*printf("Apaga mensagem\n");
-                    printf("Conversa dado: %d- conversa atual: %d Mensagem dada: %d- mens at: %d\n",id_conversa, conversa->id, id_mensagem, (mens+i)->id);
-                    */
+                     printf("Conversa dado: %d- conversa atual: %d Mensagem dada: %d- mens at: %d\n",id_conversa, conversa->id, id_mensagem, (mens+i)->id);
+                     */
                     for(int j=i+1;j<conversa->n_insercoes;j++){
                         
                         (mens+i)->id=(mens+j)->id;
@@ -318,10 +374,10 @@ void remover_mensagem(int id_mensagem, int id_conversa,CORPUS *cp){
                     }
                     
                     conversa->n_insercoes--;
-
+                    
                     return;
                 }else{
-                 
+                    
                     printf("Mensagem nao existente\n");
                     
                     
@@ -439,13 +495,13 @@ int idf_aux(CORPUS cp, char pal[]){
     CONVERSA * conversa = cp.pfirst_conversa;
     int nt=0;
     while (conversa != NULL){
-            while(conversa->bag_of_word_conversa!=NULL){
-                
-                if(strcmp(pal, conversa->bag_of_word_conversa->palavra)==0){
-                    nt++;
-                }
-                conversa->bag_of_word_conversa=conversa->bag_of_word_conversa->pnext;
+        while(conversa->bag_of_word_conversa!=NULL){
+            
+            if(strcmp(pal, conversa->bag_of_word_conversa->palavra)==0){
+                nt++;
             }
+            conversa->bag_of_word_conversa=conversa->bag_of_word_conversa->pnext;
+        }
         
         conversa=conversa->pnext;
         
@@ -463,33 +519,23 @@ int numero_conversas(CORPUS cp){
     return n;
 }
 
-float idf(int n, int nt){
+void tfIdf(int n, int nt, char pal[], CORPUS cp){
     float d = 1+nt;
     float x = n/d;
     float r = n%(1+nt);
     x = x + r;
-   
-    return log(x);
-}
-void tfIdf(char pal[], CORPUS cp){
     CONVERSA * conversa = cp.pfirst_conversa;
     
-    while (conversa != NULL){
-        printf("->%s\n",conversa->pfirst_menssagem->text);
+    while(conversa!=NULL){
+        printf("->%d\n", conversa->id);
         while(conversa->bag_of_word_conversa!=NULL){
-             printf("Entrou\n");
-            
-            if(strcmp(pal, conversa->bag_of_word_conversa->palavra)==0){
-           
-            }
-            conversa->bag_of_word_conversa=conversa->bag_of_word_conversa->pnext;
+            printf("Entrou\n");
         }
-        //printf("Freq. %d\n\n");
-        
         
         conversa=conversa->pnext;
-        
     }
+    
+    
 }
 
 /**
@@ -806,10 +852,10 @@ void printMatrix(PALAVRA * matrix, int number_of_lines_used){
     if (matrix != NULL){
         for (int i = 0; i<number_of_lines_used; i++){
             printf("Palavra: %s Frequencia:%d\n", matrix->palavra, matrix->freq_abs);
-           // printf("Indice da mensagem  %d\n ", matrix->pos->indice_mensagem);
-
+            // printf("Indice da mensagem  %d\n ", matrix->pos->indice_mensagem);
+            
             matrix=matrix->pnext;
-        
+            
         }
     }
     printf("-----------\n");
