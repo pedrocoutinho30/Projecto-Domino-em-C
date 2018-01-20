@@ -1,19 +1,17 @@
-Numero de conversas 3
+Numero de conversa 3
 conversa 0 numero de mensagens 4
 1 Oi?|12.09
-2 Sim Sim Sim Sim?|12.10
+2 Sim?|12.10.
 1 vamos indo vamos la?|12.11
-2 Yap. |12.12
-
+2 Yap.|12.12
 conversa 1 numero de mensagens 4
 4 Oi, tudo?|12.09
 3 Ta, tudo!|12.10
 4 Vamos surfar surfar vamos?|12.11
 3 Bota.|12.12
-
 conversa 2 numero de mensagens 5
-4 Ola, tudo bem?|12.09
+4 Ola, tudo bem? |12.09
 2 Ola, sim e contigo?|12.10
 4 Tambem.|12.11
-2 Queres ir ao cinema?|12.12
+2 Queres ir ao cinema?|12.13
 4 Pode ser!|12.12
